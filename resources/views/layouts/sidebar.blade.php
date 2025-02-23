@@ -28,7 +28,7 @@
        with font-awesome or any other icon font library -->
 
                 <li class="nav-item">
-                    <a href="./index.html" class="nav-link active">
+                    <a href="{{url('/dashboard')}}" class="nav-link active">
                         <i class="far fa-circle nav-icon"></i>
                         <p>Dashboard</p>
                     </a>
@@ -62,9 +62,35 @@
                         </li>
                     </ul>
                 </li>
+                <li class="nav-item">
+                    <a href="{{ route('profile.edit') }}" class="nav-link">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>Profile</p>
+                    </a>
+                </li>
+                <li class="nav-item" id="logout_button">
+                    <a href="javascript:void(0)" class="nav-link bg-danger">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>Logout</p>
+                    </a>
+                </li>
+                <form id="logout_form" method="POST" action="{{ route('logout') }}">
+                    @csrf
+                </form>
             </ul>
         </nav>
         <!-- /.sidebar-menu -->
     </div>
     <!-- /.sidebar -->
 </aside>
+
+
+@push('custom-scripts')
+    <script>
+        $('body').on('click', '#logout_button', function() {
+            var button = $(this);
+            button.prop('disabled', true); // Disable the button
+            $('#logout_form').submit(); // Submit the form
+        });
+    </script>
+@endpush
