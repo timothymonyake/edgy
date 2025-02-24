@@ -11,6 +11,7 @@ class KillZone extends Model
 {
     use HasFactory;
 
+    protected $table = 'kill_zones';
     protected $fillable = ['name', 'is_active'];
 
     public function trades(): HasMany

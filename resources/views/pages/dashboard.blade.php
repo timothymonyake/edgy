@@ -1,6 +1,8 @@
 @extends('layouts.app')
 @push('custom-styles')
 @endpush
+@section('title')
+@endsection
 @section('breadcrumb')
     {{--
     <li class="breadcrumb-item"><a href="#">Dashboard</a></li> --}}
