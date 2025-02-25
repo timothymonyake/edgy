@@ -37,6 +37,7 @@ class Trade extends Model
         return $this->belongsTo(KillZone::class);
     }
 
+
     public function plan(): BelongsTo
     {
         return $this->belongsTo(TradingPlan::class);

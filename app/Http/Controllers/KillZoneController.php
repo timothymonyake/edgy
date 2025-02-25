@@ -45,7 +45,7 @@ class KillZoneController extends Controller
                             </a>
                             <div class="dropdown-menu dropdown-menu-end dropdown-menu-xs">
                                 <ul class="link-list-plain">
-                                    <li><a href="' . route('killzones.edit', $killzone->id) . '">Edit</a></li>
+                                    <li><a href="' . url('kill-zones/edit', $killzone->id) . '">Edit</a></li>
                                     <li><a href="#" onclick="deleteKillzone(' . $killzone->id . ')">Remove</a></li>
                                 </ul>
                             </div>
@@ -59,7 +59,7 @@ class KillZoneController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|unique:killzones|max:255',
+            'name' => 'required|unique:kill_zones|max:255',
         ]);
 
         if (Killzone::create($request->all())) {

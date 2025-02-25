@@ -3,6 +3,7 @@
 use App\Http\Controllers\KillZoneController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PairController;
+use App\Http\Controllers\WeeklyForecastController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -22,6 +23,8 @@ Route::get('/kill-zones/all', [KillZoneController::class, 'getKillzones'])->name
 Route::resource('kill-zones', KillZoneController::class);
 
 
+Route::get('/weekly-forecasts/all', [WeeklyForecastController::class, 'getForecasts'])->name('weekly_forecasts.all');
+Route::resource('/weekly-forecasts', WeeklyForecastController::class);
 
 
 Route::middleware('auth')->group(function () {

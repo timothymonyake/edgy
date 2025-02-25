@@ -58,8 +58,6 @@
 
         $(document).ready(function() {
 
-            showToast('ewewewewew','success');
-
             $('#add_resource_form').submit(function(e) {
                 e.preventDefault();
                 $.ajax({

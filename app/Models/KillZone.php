@@ -18,4 +18,9 @@ class KillZone extends Model
     {
         return $this->hasMany(Trade::class);
     }
+
+    public function pairs()
+    {
+        return $this->hasMany(Pair::class);
+    }
 }

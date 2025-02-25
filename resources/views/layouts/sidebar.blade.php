@@ -46,6 +46,24 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a href="{{url('/weekly-forecasts')}}" class="nav-link">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>Weekly Forecasts</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{url('/check-lists')}}" class="nav-link">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>Checklists</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{url('/trading-plans')}}" class="nav-link">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>Trading Plans</p>
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a href="#" class="nav-link">
                         <i class="nav-icon fas fa-table"></i>
                         <p>
