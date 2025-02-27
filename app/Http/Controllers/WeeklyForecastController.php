@@ -16,8 +16,43 @@ class WeeklyForecastController extends Controller
      */
     public function index()
     {
+        $forecasts = $this->getAllForecasts();
+        $forecast_count = $forecasts->orderBy('is_active','desc')
+        ->whereYear('week_start', Carbon::now()->year)->get()->count();
+
+
+        $show_seed_btn = $forecast_count > 50 ? false : true;
+
         $title = 'Weekly Forecasts';
-        return view('pages.weekly_forecasts', compact('title'));
+        return view('pages.weekly_forecasts', compact('title','show_seed_btn'));
+    }
+
+    public function seedYearWeeks()
+    {
+        $year = Carbon::now()->year;
+        $weeks = collect();
+        $week = Carbon::now()->startOfYear();
+        $week->startOfWeek();
+        $week->addWeek();
+        while ($week->year == $year) {
+            $weeks->push($week->copy());
+            $week->addWeek();
+        }
+
+        $weeks->each(function ($week) {
+            $weekStart = $week->copy()->startOfWeek(Carbon::SUNDAY);
+            $weekEnd = $week->copy()->endOfWeek(Carbon::SATURDAY);
+
+            //,
+            WeeklyForecast::create([
+                'user_id' =>  1,//Auth::id(),
+                'week_start' => $weekStart->format('Y-m-d'),
+                'week_end' => $weekEnd->format('Y-m-d'),
+                'is_active' => Carbon::now()->between($weekStart, $weekEnd), // Active only for the current week
+                'economic_calendar_link' => 'https://www.forexfactory.com/calendar?week='.$weekStart->format('Md.Y'),
+            ]);
+        });
+        return  redirect()->back()->with('success', 'Year weeks seeded successfully!');
     }
 
     public function getAllForecasts()
@@ -28,17 +63,28 @@ class WeeklyForecastController extends Controller
     public function getForecasts(Request $request)
     {
         $forecasts = $this->getAllForecasts();
+        //=mar2.2025
 
         if ($request->has('draw')) {
-            return DataTables::of($forecasts->get())
+            return DataTables::of($forecasts->orderBy('is_active','desc')->get())
                 ->addIndexColumn()
                 ->addColumn('week', fn($forecast) => $forecast->week_start . ' - ' . $forecast->week_end)
-                ->addColumn('status', fn($forecast) => $forecast->market_bias)
-                ->addColumn('action', fn($forecast) => '
-                    <a href="' . route('weekly_forecasts.edit', $forecast->id) . '" class="btn btn-sm btn-warning">Edit</a>
-                    <button onclick="deleteForecast(' . $forecast->id . ')" class="btn btn-sm btn-danger">Delete</button>
-                ')
-                ->rawColumns(['action'])
+                ->addColumn('status', function ($forecast) {
+                    return $forecast->is_active
+                        ? '<span class="badge rounded-pill bg-success">ACTIVE</span>'
+                        : '<span class="badge rounded-pill bg-danger">INACTIVE</span>';
+                })
+                ->addColumn('economic_calendar', function ($forecast) {
+                    return $forecast->economic_calendar_link
+                        ? '<a href="' . $forecast->economic_calendar_link . '" target="_blank">View</a>'
+                        : 'N/A';
+                })
+                ->addColumn('action', function ($forecast) {
+                    if($forecast->is_active){
+                        return '<a href="' . route('weekly-forecasts.edit', $forecast->id) . '" class="btn btn-sm btn-primary">Edit</a>';
+                    }
+                })
+                ->rawColumns(['action','status','economic_calendar'])
                 ->make(true);
         }
     }

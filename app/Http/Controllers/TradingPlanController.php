@@ -2,64 +2,44 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\TradingPlan;
+namespace App\Http\Controllers;
 use Illuminate\Http\Request;
+use Yajra\DataTables\Facades\DataTables;
+use Carbon\Carbon;
+use App\Models\TradingPlan;
+use Illuminate\Support\Facades\Auth;
 
-class TradingPlanController extends Controller
-{
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
+class TradingPlanController extends Controller {
+    public function index() {
+        return view('pages.trading_plans', ['title' => 'Trading Plans']);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+    public function getAllTradingPlans() {
+        return TradingPlan::query();
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
+    public function getTradingPlans(Request $request) {
+        $tradingPlans = $this->getAllTradingPlans();
+        if ($request->has('draw')) {
+            return DataTables::of($tradingPlans->get())
+                ->addIndexColumn()
+                ->addColumn('created_at', fn($plan) => $plan->created_at->format('D d M Y'))
+                ->addColumn('action', fn($plan) => '<button onclick="deletePlan('.$plan->id.')">Delete</button>')
+                ->rawColumns(['action'])
+                ->make(true);
+        }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(TradingPlan $tradingPlan)
-    {
-        //
-    }
+    public function store(Request $request) {
+        $request->validate([
+            'markets' => 'required',
+            'timeframes' => 'required',
+            'strategies' => 'required',
+            'max_risk_per_trade' => 'required|numeric',
+            'max_weekly_drawdown' => 'required|numeric',
+        ]);
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(TradingPlan $tradingPlan)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, TradingPlan $tradingPlan)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(TradingPlan $tradingPlan)
-    {
-        //
+        TradingPlan::create($request->all());
+        return response()->json(['message' => 'Trading Plan added successfully!', 'type' => 'success']);
     }
 }

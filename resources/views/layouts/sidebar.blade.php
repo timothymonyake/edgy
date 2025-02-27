@@ -34,9 +34,33 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{url('/pairs')}}" class="nav-link">
+                    <a href="{{url('/prop-firms')}}" class="nav-link">
                         <i class="far fa-circle nav-icon"></i>
-                        <p>Pairs</p>
+                        <p>Prop Firms</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{url('/lessons')}}" class="nav-link">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>Lessons</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{url('/accounts')}}" class="nav-link">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>Accounts</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{url('/users')}}" class="nav-link">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>Users</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{url('/trades')}}" class="nav-link">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>Trades</p>
                     </a>
                 </li>
                 <li class="nav-item">
