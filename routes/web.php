@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AccountController;
 use App\Http\Controllers\KillZoneController;
 use App\Http\Controllers\LessonController;
 use App\Http\Controllers\ProfileController;
@@ -7,6 +8,7 @@ use App\Http\Controllers\PairController;
 use App\Http\Controllers\PropFirmController;
 use App\Http\Controllers\TradingPlanController;
 use App\Http\Controllers\WeeklyForecastController;
+use App\Models\Account;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -37,6 +39,9 @@ Route::resource('/prop-firms', PropFirmController::class);
 
 Route::get('/lessons/all', [LessonController::class, 'getLessons'])->name('lessons.all');
 Route::resource('/lessons', LessonController::class);
+
+Route::get('/accounts/all', [AccountController::class, 'getAccounts'])->name('accounts.all');
+Route::resource('/accounts', AccountController::class);
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('accounts', function (Blueprint $table) {
             $table->id();
             $table->string('name'); // Account Name
-            $table->string('broker'); // Broker Name
             $table->foreignId('prop_firm_id')->constrained()->onDelete('cascade');
             $table->string('account_number'); // Account ID
             $table->unique(['prop_firm_id','account_number']);

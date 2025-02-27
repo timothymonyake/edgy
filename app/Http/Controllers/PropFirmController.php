@@ -18,30 +18,38 @@ class PropFirmController extends Controller
         return view('pages.prop_firms', ['title' => 'Prop Firms']);
     }
 
-    public function getAllPropFirms() {
-        return PropFirm::query();
-    }
-
     public function getPropFirms(Request $request) {
-        $propFirms = $this->getAllPropFirms();
-        if ($request->has('draw')) {
-            return DataTables::of($propFirms->get())
-                ->addIndexColumn()
-                ->addColumn('created_at', fn($firm) => $firm->created_at->format('D d M Y'))
-                ->addColumn('action', fn($firm) => '<button onclick="deleteFirm('.$firm->id.')">Delete</button>')
-                ->rawColumns(['action'])
-                ->make(true);
-        }
+        $propFirms = PropFirm::query();
+        return DataTables::of($propFirms)
+            ->addIndexColumn()
+            ->addColumn('created_at', fn($firm) => $firm->created_at->format('D d M Y'))
+            ->addColumn('action', function ($firm) {
+                return '<button class="btn btn-sm btn-warning edit-prop-firm" data-id="'.$firm->id.'">Edit</button>
+                        <button class="btn btn-sm btn-danger delete-prop-firm" data-id="'.$firm->id.'">Delete</button>';
+            })
+            ->rawColumns(['action'])
+            ->make(true);
     }
 
     public function store(Request $request) {
         $request->validate([
-            'name' => 'required',
-            'website_url' => 'nullable|url',
+            'name' => 'required|unique:prop_firms,name',
+            'website_url' => 'required|url',
         ]);
 
         PropFirm::create($request->all());
         return response()->json(['message' => 'Prop Firm added successfully!', 'type' => 'success']);
+    }
+
+    public function update(Request $request, $id) {
+        $firm = PropFirm::findOrFail($id);
+        $firm->update($request->all());
+        return response()->json(['message' => 'Prop Firm updated successfully!', 'type' => 'success']);
+    }
+
+    public function destroy($id) {
+        PropFirm::findOrFail($id)->delete();
+        return response()->json(['message' => 'Prop Firm deleted successfully!', 'type' => 'success']);
     }
 
     /**
@@ -69,19 +77,5 @@ class PropFirmController extends Controller
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, PropFirm $propFirm)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(PropFirm $propFirm)
-    {
-        //
-    }
+  
 }

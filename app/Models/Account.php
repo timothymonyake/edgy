@@ -10,16 +10,20 @@ class Account extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'broker', 'firm_id', 'account_number'];
+    protected $fillable = ['name', 'broker', 'prop_firm_id', 'account_number'];
 
     public function firm(): BelongsTo
     {
-        return $this->belongsTo(PropFirm::class, 'firm_id');
+        return $this->belongsTo(PropFirm::class, 'prop_firm_id');
     }
 
     public function phases(): HasMany
     {
         return $this->hasMany(AccountPhase::class);
+    }
+
+    public function propFirm() {
+        return $this->belongsTo(PropFirm::class);
     }
 
     public function trades(): HasMany
