@@ -1,14 +1,17 @@
 <?php
 
 use App\Http\Controllers\AccountController;
+use App\Http\Controllers\EntryChecklistController;
 use App\Http\Controllers\KillZoneController;
 use App\Http\Controllers\LessonController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PairController;
 use App\Http\Controllers\PropFirmController;
+use App\Http\Controllers\TradeController;
 use App\Http\Controllers\TradingPlanController;
 use App\Http\Controllers\WeeklyForecastController;
 use App\Models\Account;
+use App\Models\EntryChecklist;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -22,6 +25,9 @@ Route::get('/dashboard', function () {
 
 Route::get('pairs/all', [PairController::class, 'getPairs'])->name('pairs.all');
 Route::resource('pairs', PairController::class);
+
+Route::get('/trades/all', [TradeController::class, 'getTrades'])->name('trades.all');
+Route::resource('/trades', TradeController::class);
 
 
 Route::get('/kill-zones/all', [KillZoneController::class, 'getKillzones'])->name('killzones.all');
@@ -42,6 +48,9 @@ Route::resource('/lessons', LessonController::class);
 
 Route::get('/accounts/all', [AccountController::class, 'getAccounts'])->name('accounts.all');
 Route::resource('/accounts', AccountController::class);
+
+Route::get('/entry-checklists/all', [EntryChecklistController::class, 'getEntryChecklists'])->name('entry_checklists.all');
+Route::resource('/entry-checklists', EntryChecklistController::class);
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

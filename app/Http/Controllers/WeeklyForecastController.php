@@ -60,8 +60,17 @@ class WeeklyForecastController extends Controller
         return WeeklyForecast::query();
     }
 
+    public function updateForecastStatus()
+    {
+        $forecasts = $this->getAllForecasts()->get();
+        $forecasts->each(function ($forecast) {
+            $forecast->update(['is_active' => Carbon::now()->between($forecast->week_start, $forecast->week_end)]);
+        });
+    }
+
     public function getForecasts(Request $request)
     {
+        $this->updateForecastStatus();
         $forecasts = $this->getAllForecasts();
         //=mar2.2025
 
@@ -80,8 +89,10 @@ class WeeklyForecastController extends Controller
                         : 'N/A';
                 })
                 ->addColumn('action', function ($forecast) {
-                    if($forecast->is_active){
+                    if(Carbon::now()->between($forecast->week_start, $forecast->week_end)){
                         return '<a href="' . route('weekly-forecasts.edit', $forecast->id) . '" class="btn btn-sm btn-primary">Edit</a>';
+                    }else{
+                        WeeklyForecast::where('id', $forecast->id)->update(['is_active' => 0]);
                     }
                 })
                 ->rawColumns(['action','status','economic_calendar'])

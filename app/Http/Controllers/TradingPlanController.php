@@ -11,23 +11,21 @@ use Illuminate\Support\Facades\Auth;
 
 class TradingPlanController extends Controller {
     public function index() {
-        return view('pages.trading_plans', ['title' => 'Trading Plans']);
-    }
-
-    public function getAllTradingPlans() {
-        return TradingPlan::query();
+        return view('pages.trading_plans');
     }
 
     public function getTradingPlans(Request $request) {
-        $tradingPlans = $this->getAllTradingPlans();
-        if ($request->has('draw')) {
-            return DataTables::of($tradingPlans->get())
-                ->addIndexColumn()
-                ->addColumn('created_at', fn($plan) => $plan->created_at->format('D d M Y'))
-                ->addColumn('action', fn($plan) => '<button onclick="deletePlan('.$plan->id.')">Delete</button>')
-                ->rawColumns(['action'])
-                ->make(true);
-        }
+        $tradingPlans = TradingPlan::with('user'); // Include user details if needed
+        return DataTables::of($tradingPlans)
+            ->addIndexColumn()
+            ->addColumn('user', fn($plan) => $plan->user->name ?? 'N/A')
+            ->addColumn('created_at', fn($plan) => $plan->created_at->format('D d M Y'))
+            ->addColumn('action', function ($plan) {
+                return '<button class="btn btn-sm btn-warning edit-plan" data-id="'.$plan->id.'">Edit</button>
+                        <button class="btn btn-sm btn-danger delete-plan" data-id="'.$plan->id.'">Delete</button>';
+            })
+            ->rawColumns(['action'])
+            ->make(true);
     }
 
     public function store(Request $request) {
@@ -39,7 +37,27 @@ class TradingPlanController extends Controller {
             'max_weekly_drawdown' => 'required|numeric',
         ]);
 
-        TradingPlan::create($request->all());
+        $trading_plan = new TradingPlan();
+        $trading_plan->markets = $request->markets;
+        $trading_plan->timeframes = $request->timeframes;
+        $trading_plan->strategies = $request->strategies;
+        $trading_plan->max_risk_per_trade = $request->max_risk_per_trade;
+        $trading_plan->max_weekly_drawdown = $request->max_weekly_drawdown;
+        $trading_plan->user_id = 1;
+        $trading_plan->save();
+
+
         return response()->json(['message' => 'Trading Plan added successfully!', 'type' => 'success']);
+    }
+
+    public function update(Request $request, $id) {
+        $plan = TradingPlan::findOrFail($id);
+        $plan->update($request->all());
+        return response()->json(['message' => 'Trading Plan updated successfully!', 'type' => 'success']);
+    }
+
+    public function destroy($id) {
+        TradingPlan::findOrFail($id)->delete();
+        return response()->json(['message' => 'Trading Plan deleted successfully!', 'type' => 'success']);
     }
 }
