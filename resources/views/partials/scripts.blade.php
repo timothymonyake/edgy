@@ -15,4 +15,8 @@
     <script src="{{ asset('core/plugins/datatables-buttons/js/buttons.print.min.js') }}"></script>
     <script src="{{ asset('core/plugins/datatables-buttons/js/buttons.colVis.min.js') }}"></script>
     <script src="{{ asset('core/plugins/sweetalert2/sweetalert2.min.js') }}"></script>
+    <script src="{{ asset('core/plugins/select2/js/select2.full.min.js') }}"></script>
+    <script src="{{ asset('core/plugins/moment/moment.min.js') }}"></script>
+    <script src="{{ asset('core/plugins/daterangepicker/daterangepicker.js') }}"></script>
+    <script src="{{ asset('core/plugins/dropzone/min/dropzone.min.js') }}"></script>
     <script src="{{ asset('core/dist/js/adminlte.min.js') }}"></script>

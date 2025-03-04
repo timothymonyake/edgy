@@ -6,6 +6,7 @@ use App\Http\Controllers\KillZoneController;
 use App\Http\Controllers\LessonController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PairController;
+use App\Http\Controllers\PhaseController;
 use App\Http\Controllers\PropFirmController;
 use App\Http\Controllers\TradeController;
 use App\Http\Controllers\TradingPlanController;
@@ -29,6 +30,8 @@ Route::resource('pairs', PairController::class);
 Route::get('/trades/all', [TradeController::class, 'getTrades'])->name('trades.all');
 Route::resource('/trades', TradeController::class);
 
+Route::get('/phases/all', [PhaseController::class, 'getPhases'])->name('phases.all');
+Route::resource('/phases', PhaseController::class);
 
 Route::get('/kill-zones/all', [KillZoneController::class, 'getKillzones'])->name('killzones.all');
 Route::resource('kill-zones', KillZoneController::class);

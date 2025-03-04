@@ -69,6 +69,12 @@
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
+                            <a href="{{ url('/phases') }}" class="nav-link">
+                                <i class="fas fa-sync-alt nav-icon"></i>
+                                <p>Phases</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a href="{{ url('/pairs') }}" class="nav-link">
                                 <i class="fas fa-exchange-alt nav-icon"></i>
                                 <p>Pairs</p>

@@ -7,12 +7,14 @@
             <tr>
                 <th>ID</th>
                 <th>Account</th>
+                <th>Phase</th>
                 <th>Pair</th>
+                <th>Kill Zone</th>
+                <th>Plan</th>
                 <th>Lot Size</th>
                 <th>Entry Price</th>
                 <th>Exit Price</th>
                 <th>Profit/Loss</th>
-                <th>Status</th>
                 <th>Created At</th>
                 <th>Action</th>
             </tr>
@@ -25,11 +27,23 @@
             <div class="modal-body">
                 <div class="form-group">
                     <label>Account</label>
-                    <input name="account_id" type="text" class="form-control" required>
+                    <select id="account_id" name="account_id" class="form-control"></select>
+                </div>
+                <div class="form-group">
+                    <label>Phase</label>
+                    <select id="account_phase_id" name="account_phase_id" class="form-control"></select>
                 </div>
                 <div class="form-group">
                     <label>Pair</label>
-                    <input name="pair_id" type="text" class="form-control" required>
+                    <select id="pair_id" name="pair_id" class="form-control"></select>
+                </div>
+                <div class="form-group">
+                    <label>Kill Zone</label>
+                    <select id="kill_zone_id" name="kill_zone_id" class="form-control"></select>
+                </div>
+                <div class="form-group">
+                    <label>Plan</label>
+                    <select id="trading_plan_id" name="trading_plan_id" class="form-control"></select>
                 </div>
                 <div class="form-group">
                     <label>Lot Size</label>
@@ -37,23 +51,15 @@
                 </div>
                 <div class="form-group">
                     <label>Entry Price</label>
-                    <input name="entry_price" type="number" step="0.0001" class="form-control" required>
+                    <input name="entry_price" type="number" step="0.00001" class="form-control" required>
                 </div>
                 <div class="form-group">
                     <label>Exit Price</label>
-                    <input name="exit_price" type="number" step="0.0001" class="form-control" required>
+                    <input name="exit_price" type="number" step="0.00001" class="form-control" required>
                 </div>
                 <div class="form-group">
                     <label>Profit/Loss</label>
                     <input name="profit_loss" type="number" step="0.01" class="form-control" required>
-                </div>
-                <div class="form-group">
-                    <label>Status</label>
-                    <select name="status" class="form-control" required>
-                        <option value="Complete">Complete</option>
-                        <option value="Verified">Verified</option>
-                        <option value="Annulled">Annulled</option>
-                    </select>
                 </div>
             </div>
             <div class="modal-footer">
@@ -69,13 +75,15 @@ $(document).ready(function() {
         ajax: { url: '{{ route('trades.all') }}', data: { draw: true } },
         columns: [
             { data: 'id' },
-            { data: 'account.name' },
-            { data: 'pair.name' },
+            { data: 'account_id' },
+            { data: 'account_phase_id' },
+            { data: 'pair_id' },
+            { data: 'kill_zone_id' },
+            { data: 'trading_plan_id' },
             { data: 'lot_size' },
             { data: 'entry_price' },
             { data: 'exit_price' },
             { data: 'profit_loss' },
-            { data: 'status' },
             { data: 'created_at' },
             { data: 'action' }
         ]
@@ -85,22 +93,31 @@ $(document).ready(function() {
         $('#add_trade_modal').modal('show');
     });
 
-    $('#add_trade_form').submit(function(e) {
-        e.preventDefault();
-        $.ajax({
-            url: $(this).attr('action'),
-            type: 'POST',
-            data: $(this).serialize(),
-            success: function(response) {
-                $('#add_trade_modal').modal('hide');
-                showToast(response.message, response.type);
-                $('#trades_table').DataTable().ajax.reload();
-            },
-            error: function(response) {
-                console.log(response);
+    function initSelect2(id, url, placeholder) {
+        $('#' + id).select2({
+            placeholder: placeholder,
+            ajax: {
+                url: url,
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return { q: params.term };
+                },
+                processResults: function (data) {
+                    return { results: $.map(data, function (item) {
+                        return { text: item['name'], id: item['id'] };
+                    }) };
+                },
+                cache: true
             }
         });
-    });
+    }
+
+    initSelect2('account_id', "{{ route('accounts.all') }}", 'Select Account');
+    initSelect2('account_phase_id', "{{ route('phases.all') }}", 'Select Phase');
+    initSelect2('pair_id', "{{ route('pairs.all') }}", 'Select Pair');
+    initSelect2('kill_zone_id', "{{ route('killzones.all') }}", 'Select Kill Zone');
+    initSelect2('trading_plan_id', "{{ route('trading_plans.all') }}", 'Select Trading Plan');
 });
 </script>
 @endpush
