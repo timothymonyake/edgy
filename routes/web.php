@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AccountController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EntryChecklistController;
 use App\Http\Controllers\KillZoneController;
 use App\Http\Controllers\LessonController;
@@ -18,14 +19,15 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
-Route::get('/dashboard', function () {
-    return view('pages.dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+
+
+Route::middleware('auth','verified')->group(function () {
 
 
 
+    Route::get('/dashboard/stream', [DashboardController::class, 'stream'])->name('dashboard.stream');
+    Route::resource('/dashboard', DashboardController::class);
 
-Route::middleware('auth')->group(function () {
 
     Route::get('pairs/all', [PairController::class, 'getPairs'])->name('pairs.all');
     Route::resource('pairs', PairController::class);

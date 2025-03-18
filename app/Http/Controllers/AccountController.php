@@ -18,7 +18,8 @@ class AccountController extends Controller
 
     public function getAccounts(Request $request) {
         $accounts = Account::with('propFirm');
-        return DataTables::of($accounts)
+        if($request->has('_')){
+            return DataTables::of($accounts)
             ->addIndexColumn()
             ->addColumn('prop_firm', fn($account) => $account->propFirm->name ?? 'N/A')
             ->addColumn('created_at', fn($account) => $account->created_at->format('D d M Y'))
@@ -28,6 +29,25 @@ class AccountController extends Controller
             })
             ->rawColumns(['action'])
             ->make(true);
+        }else{
+            $search_term = $request->q ?? null;
+
+            $accounts = Account::select("id", "name", "account_number")
+                ->when($search_term, function ($query) use ($search_term) {
+                    $query->where('name', 'LIKE', "%{$search_term}%")
+                        ->orWhere('account_number', 'LIKE', "%{$search_term}%");
+                })
+                ->orderBy('name', 'asc')
+                ->get();
+
+            $data = $accounts->map(fn($account) => [
+                'id' => $account->id,
+                'name' => strtoupper("{$account->name} - {$account->account_number}")
+            ]);
+
+            return response()->json($data);
+
+        }
     }
 
     public function store(Request $request) {

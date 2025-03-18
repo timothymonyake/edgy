@@ -50,8 +50,24 @@ class PairController extends Controller
                             </div>
                         </div>';
                 })
-                ->rawColumns(['action', 'status','created_at'])
+                ->rawColumns(['action', 'status', 'created_at'])
                 ->make(true);
+        } else {
+            $search_term = $request->q ?? null;
+
+            $pairs = Pair::select("id", "name")
+                ->when($search_term, function ($query) use ($search_term) {
+                    $query->where('name', 'LIKE', "%{$search_term}%");
+                })
+                ->orderBy('name', 'asc')
+                ->get();
+
+            $data = $pairs->map(fn($pair) => [
+                'id' => $pair->id,
+                'name' => strtoupper($pair->name)
+            ]);
+
+            return response()->json($data);
         }
     }
 
@@ -72,7 +88,7 @@ class PairController extends Controller
             'name' => 'required|unique:pairs|max:255',
         ]);
 
-        if(Pair::create($request->all())){
+        if (Pair::create($request->all())) {
             return response()->json([
                 'message' => 'Pair added successfully!',
                 'type' => 'success'

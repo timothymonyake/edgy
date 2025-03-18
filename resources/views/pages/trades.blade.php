@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('title', 'Trades')
 @section('content')
-    <button id="add_trade_btn" class="btn btn-primary">Add Trade</button>
+    <button id="add_trade_btn" class="btn btn-primary">Add</button>
     <table id="trades_table" class="table table-bordered table-hover">
         <thead>
             <tr>
@@ -21,7 +21,64 @@
         </thead>
     </table>
 
-    <x-modal id="add_trade_modal" size="modal-md" title="Add Trade">
+
+    <x-modal id="add_trade_modal" size="modal-lg" title="Add Trade">
+        <form id="add_trade_form" action="{{ url('/trades') }}" method="post">
+            @csrf
+            <div class="modal-body">
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label>Account</label>
+                        <select id="account_id" name="account_id" class="form-control"></select>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label>Phase</label>
+                        <select id="account_phase_id" name="account_phase_id" class="form-control"></select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label>Pair</label>
+                        <select id="pair_id" name="pair_id" class="form-control"></select>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label>Kill Zone</label>
+                        <select id="kill_zone_id" name="kill_zone_id" class="form-control"></select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label>Plan</label>
+                        <select id="trading_plan_id" name="trading_plan_id" class="form-control"></select>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label>Lot Size</label>
+                        <input name="lot_size" type="number" step="0.01" class="form-control" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label>Entry Price</label>
+                        <input name="entry_price" type="number" step="0.00001" class="form-control" required>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label>Exit Price</label>
+                        <input name="exit_price" type="number" step="0.00001" class="form-control" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label>Profit/Loss</label>
+                        <input name="profit_loss" type="number" step="0.01" class="form-control" required>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">Save</button>
+            </div>
+        </form>
+    </x-modal>
+  {{--   <x-modal id="add_trade_modal" size="modal-md" title="Add Trade">
         <form id="add_trade_form" action="{{ url('/trades') }}" method="post">
             @csrf
             <div class="modal-body">
@@ -66,7 +123,7 @@
                 <button type="submit" class="btn btn-primary">Save</button>
             </div>
         </form>
-    </x-modal>
+    </x-modal> --}}
 @endsection
 @push('custom-scripts')
 <script>

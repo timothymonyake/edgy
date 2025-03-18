@@ -53,6 +53,22 @@ class KillZoneController extends Controller
                 })
                 ->rawColumns(['action', 'status', 'created_at'])
                 ->make(true);
+        } else {
+            $search_term = $request->q ?? null;
+
+            $killzones = Killzone::select("id", "name")
+                ->when($search_term, function ($query) use ($search_term) {
+                    $query->where('name', 'LIKE', "%{$search_term}%");
+                })
+                ->orderBy('name', 'asc')
+                ->get();
+
+            $data = $killzones->map(fn($killzone) => [
+                'id' => $killzone->id,
+                'name' => strtoupper($killzone->name)
+            ]);
+
+            return response()->json($data);
         }
     }
 
